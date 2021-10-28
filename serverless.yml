@@ -1,0 +1,41 @@
+service: conceitosnodejs
+
+plugins:
+  - serverless-esbuild
+  - serverless-offline
+
+provider:
+  name: aws
+  runtime: nodejs14.x
+  region: sa-east-1
+  lambdaHashingVersion: 20201221
+
+custom:
+  esbuild:
+    bundle: true
+    minify: false
+    sourcemap: true
+    exclude: 
+      - aws-sdk
+    target: node14
+
+functions:
+  createTodos:
+    handler: src/functions/createTodos.handle
+    events:
+      - http:
+          path: /createTodos/{user_id}
+          method: POST
+          cors: true
+  listTodos:
+    handler: src/functions/listTodos.handle
+    events:
+      - http:
+          path: /listTodos/{user_id}
+          method: GET
+          cors: true
+          request:
+            parameters:
+              paths:
+                user_id: true
+
